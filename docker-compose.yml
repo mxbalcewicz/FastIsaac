@@ -1,0 +1,36 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: backend
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13
+    container_name: db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: frontend
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "3000:3000"
+
+volumes:
+  postgres_data:
