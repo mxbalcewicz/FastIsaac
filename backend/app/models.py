@@ -22,4 +22,10 @@ class Item(Base):
     description = Column(String)
     quality = Column(Integer, index=True)
 
+class ItemPool(Base):
+    __tablename__ = "item_pools"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String, index=True)
+    items = relationship("Item", secondary="pool_item", back_populates='pools') # Review relationships
     

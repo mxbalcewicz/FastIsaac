@@ -10,3 +10,12 @@ class Item(Base):
     description = Column(String)
     quote = Column(String)
     quality = Column(Integer, default=0)
+
+
+class Trinket(Base):
+    __tablename__ = "trinkets"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True)
+    description = Column(String)
+    quote = Column(String)
