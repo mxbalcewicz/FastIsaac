@@ -1,40 +1,38 @@
 from pydantic import BaseModel
 
-from typing import List
+from typing import List, Optional
+
 
 class ItemBase(BaseModel):
+    id: int
     name: str
     description: str
     quote : str
     quality: int | None = 0
 
-
-class ItemCreate(ItemBase):
-    pass
-
-
-class Item(ItemBase):
-    id: int
-
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class TrinketBase(BaseModel):
+    id: int
     name: str
     description: str
     quote : str
 
-class TrinketCreate(TrinketBase):
-    pass
+    class Config:
+        from_attributes = True
 
-class Trinket(TrinketBase):
-    id: int
+class ItemPoolBase(BaseModel):
+    name: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
-class ItemPool(BaseModel):
-    name: str
+class ItemSchema(ItemBase):
+    pools: List[ItemBase]
+
+
+class ItemPoolSchema(ItemPoolBase):
     items: List[ItemBase]
