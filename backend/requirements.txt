@@ -23,6 +23,9 @@ pydantic_core==2.20.1
 Pygments==2.18.0
 python-dotenv==1.0.1
 python-multipart==0.0.9
+alembic==1.11.1
+sqlmodel==0.0.22
+asyncpg==0.29.0
 PyYAML==6.0.1
 rich==13.7.1
 shellingham==1.5.4

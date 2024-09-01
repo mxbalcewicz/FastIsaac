@@ -1,32 +1,51 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
-from .association_tables import item_pool_association
-from ..database import Base
+from sqlalchemy import Column, Integer, String, Table, ForeignKey
+from sqlalchemy.orm import relationship, declarative_base
 
 
-class Item(Base):
-    __tablename__ = "items"
+Base = declarative_base()
 
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
-    description = Column(String)
-    quote = Column(String)
-    quality = Column(Integer, default=0)
-    pools = relationship("ItemPool", secondary=item_pool_association, back_populates="items")
+# Association tables for Many-to-Many relationships
+item_itempool_association = Table(
+    'item_itempool', Base.metadata,
+    Column('item_id', Integer, ForeignKey('items.id'), primary_key=True),
+    Column('itempool_id', Integer, ForeignKey('itempools.id'), primary_key=True)
+)
 
-
-class Trinket(Base):
-    __tablename__ = "trinkets"
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
-    description = Column(String)
-    quote = Column(String)
+trinket_itempool_association = Table(
+    'trinket_itempool', Base.metadata,
+    Column('trinket_id', Integer, ForeignKey('trinkets.id'), primary_key=True),
+    Column('itempool_id', Integer, ForeignKey('itempools.id'), primary_key=True)
+)
 
 
 class ItemPool(Base):
-    __tablename__ = "item_pools"
+    __tablename__ = 'itempools'
 
-    id = Column(Integer, primary_key=True)
-    name = Column(String, index=True)
-    items = relationship("Item", secondary=item_pool_association, back_populates="pools")
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+
+    items = relationship("Item", secondary=item_itempool_association, back_populates="item_pools")
+    trinkets = relationship("Trinket", secondary=trinket_itempool_association, back_populates="item_pools")
+
+
+class Item(Base):
+    __tablename__ = 'items'
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    description = Column(String, nullable=False)
+    quote = Column(String, nullable=False)
+    quality = Column(Integer, nullable=False)
+
+    item_pools = relationship("ItemPool", secondary=item_itempool_association, back_populates="items")
+
+
+class Trinket(Base):
+    __tablename__ = 'trinkets'
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    description = Column(String, nullable=False)
+    quote = Column(String, nullable=False)
+
+    item_pools = relationship("ItemPool", secondary=trinket_itempool_association, back_populates="trinkets")
