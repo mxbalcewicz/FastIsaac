@@ -1,24 +1,40 @@
-from typing import List, Optional
-from pydantic import BaseModel
+from typing import List, Optional, Union
+from pydantic import BaseModel, ConfigDict
 
-
-class ItemPool(BaseModel):
+class ItemPoolBase(BaseModel):
     id: int
     name: str
 
+    model_config = ConfigDict(from_attributes=True)
 
-class Item(BaseModel):
+
+class ItemBase(BaseModel):
     id: int
     name: str
     description: str
     quote: str
     quality: int
-    item_pools: List[ItemPool]
+
+    model_config = ConfigDict(from_attributes=True)
 
 
-class Trinket(BaseModel):
+class TrinketBase(BaseModel):
     id: int
     name: str
     description: str
     quote: str
-    item_pools: List[ItemPool]
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+
+class ItemPoolSchema(ItemPoolBase):
+    items: List[ItemBase]
+
+
+class ItemSchema(ItemBase):
+    item_pools: Union[List[ItemPoolBase], None] = []
+
+
+class TrinketSchema(TrinketBase):
+    pass

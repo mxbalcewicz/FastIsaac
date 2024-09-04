@@ -11,13 +11,6 @@ item_itempool_association = Table(
     Column('itempool_id', Integer, ForeignKey('itempools.id'), primary_key=True)
 )
 
-trinket_itempool_association = Table(
-    'trinket_itempool', Base.metadata,
-    Column('trinket_id', Integer, ForeignKey('trinkets.id'), primary_key=True),
-    Column('itempool_id', Integer, ForeignKey('itempools.id'), primary_key=True)
-)
-
-
 class ItemPool(Base):
     __tablename__ = 'itempools'
 
@@ -25,7 +18,6 @@ class ItemPool(Base):
     name = Column(String, nullable=False)
 
     items = relationship("Item", secondary=item_itempool_association, back_populates="item_pools")
-    trinkets = relationship("Trinket", secondary=trinket_itempool_association, back_populates="item_pools")
 
 
 class Item(Base):
@@ -47,5 +39,3 @@ class Trinket(Base):
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
     quote = Column(String, nullable=False)
-
-    item_pools = relationship("ItemPool", secondary=trinket_itempool_association, back_populates="trinkets")
