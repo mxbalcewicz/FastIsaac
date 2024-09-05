@@ -9,9 +9,8 @@ WIKI_ITEMS_URL = "https://bindingofisaacrebirth.fandom.com/wiki/Items"
 WIKI_TRINKETS_URL = "https://bindingofisaacrebirth.fandom.com/wiki/Trinkets"
 
 
-
-ITEMS_PATH = os.path.join(os.path.dirname(__file__), 'items/')
-TRINKETS_PATH = os.path.join(os.path.dirname(__file__), 'trinkets/')
+ITEMS_PATH = os.path.join(os.path.dirname(__file__), "items/")
+TRINKETS_PATH = os.path.join(os.path.dirname(__file__), "trinkets/")
 
 os.makedirs(ITEMS_PATH, exist_ok=True)
 os.makedirs(TRINKETS_PATH, exist_ok=True)
@@ -59,10 +58,11 @@ os.makedirs(TRINKETS_PATH, exist_ok=True)
 #         json_list = json.dumps(items_list)
 #         f.write(json_list)
 
+
 def get_trinkets():
     page = requests.get(WIKI_TRINKETS_URL)
 
-    soup = BeautifulSoup(page.text, 'html.parser')
+    soup = BeautifulSoup(page.text, "html.parser")
     item_rows = soup.find_all(class_="row-trinket")
 
     trinkets_list = []
@@ -84,11 +84,11 @@ def get_trinkets():
                     img_cell = cells[index].find("img")
                     img_url = img_cell.attrs.get("data-src")
                     img_name = img_cell.attrs.get("alt")
-                    img_name = re.sub(r'[\W\s]', '', img_name) + ".png"
+                    img_name = re.sub(r"[\W\s]", "", img_name) + ".png"
                     value = img_name
                     r = requests.get(img_url, stream=True)
                     img_path = os.path.join(TRINKETS_PATH, img_name)
-                    with open(img_path, 'wb') as img_file:
+                    with open(img_path, "wb") as img_file:
                         r.raw.decode_content = True
                         shutil.copyfileobj(r.raw, img_file)
                 else:
@@ -99,5 +99,6 @@ def get_trinkets():
 
         json_list = json.dumps(trinkets_list)
         f.write(json_list)
+
 
 get_trinkets()

@@ -1,6 +1,7 @@
 from typing import List, Optional, Union
 from pydantic import BaseModel, ConfigDict
 
+
 class ItemPoolBase(BaseModel):
     id: int
     name: str
@@ -25,7 +26,6 @@ class TrinketBase(BaseModel):
     quote: str
 
     model_config = ConfigDict(from_attributes=True)
-
 
 
 class ItemPoolSchema(ItemPoolBase):
