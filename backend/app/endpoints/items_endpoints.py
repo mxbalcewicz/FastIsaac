@@ -1,30 +1,40 @@
-from app.schemas.item_schemas import ItemSchema, ItemBase
 from typing import List
-from fastapi import Depends
-from sqlalchemy.orm import Session
-from app.database import get_db
-from app.operations.item_operations import (
-    get_items_from_db,
-    create_item,
-    get_item_from_db,
-)
 
-from fastapi import APIRouter
+from app.database import get_db
+from app.models.item_models import Item
+from app.operations.generics import (
+    create_multiple_objects_in_db,
+    create_object_in_db,
+    delete_object_from_db,
+)
+from app.operations.item_operations import get_item_from_db, get_items_from_db
+from app.schemas.item_schemas import ItemBase, ItemSchema
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 
 router = APIRouter()
 
 
-@router.get("/items/", response_model=List[ItemSchema])
-def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    items = get_items_from_db(db, skip=skip, limit=limit)
-    return items
+@router.get("/item/", response_model=List[ItemSchema])
+def get_item_all(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    return get_items_from_db(db, skip=skip, limit=limit)
 
 
-@router.get("/items/{item_id}", response_model=ItemSchema)
+@router.get("/item/{item_id}", response_model=ItemSchema)
 def get_item(item_id: int, db: Session = Depends(get_db)):
     return get_item_from_db(db, item_id)
 
 
-@router.post("/items/", response_model=ItemBase)
+@router.post("/item/", response_model=ItemBase)
 def create_item(item: ItemBase, db: Session = Depends(get_db)):
-    return create_item(db=db, item=item)
+    return create_object_in_db(db=db, item=item)
+
+
+@router.post("/item/multiple/", response_model=List[ItemBase])
+def create_item_multiple(items: List[ItemBase], db: Session = Depends(get_db)):
+    return create_multiple_objects_in_db(db, items, Item)
+
+
+@router.delete("/item/delete/{trinket_id}")
+def delete_item(trinket_id: int, db: Session = Depends(get_db)):
+    return delete_object_from_db(db, Item, trinket_id)

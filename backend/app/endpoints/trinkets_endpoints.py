@@ -1,21 +1,42 @@
-from app.schemas.item_schemas import TrinketSchema
 from typing import List
-from fastapi import Depends
-from sqlalchemy.orm import Session
+
 from app.database import get_db
 from app.models.item_models import Trinket
-from app.operations.generics import get_objects_from_db, create_object_in_db
-
-from fastapi import APIRouter
+from app.operations.generics import (
+    create_multiple_objects_in_db,
+    create_object_in_db,
+    delete_object_from_db,
+    get_objects_from_db,
+)
+from app.schemas.item_schemas import TrinketSchema
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 
 router = APIRouter()
 
 
-@router.get("/trinkets/", response_model=List[TrinketSchema])
-def read_trinkets(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+@router.get("/trinket/", response_model=List[TrinketSchema])
+def get_trinket_all(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return get_objects_from_db(db, Trinket, skip, limit)
 
 
-@router.post("/trinkets/", response_model=TrinketSchema)
+@router.get("/trinket/{trinket_id}", response_model=TrinketSchema)
+def get_trinket(trinket_id: int, db: Session = Depends(get_db)):
+    return db.query(Trinket).filter(Trinket.id == trinket_id).one()
+
+
+@router.post("/trinket/", response_model=TrinketSchema)
 def create_trinket(trinket: TrinketSchema, db: Session = Depends(get_db)):
     return create_object_in_db(db, Trinket, trinket)
+
+
+@router.post("/trinket/multiple/", response_model=List[TrinketSchema])
+def create_trinket_multiple(
+    trinkets: List[TrinketSchema], db: Session = Depends(get_db)
+):
+    return create_multiple_objects_in_db(db, trinkets, Trinket)
+
+
+@router.delete("/trinket/delete/{trinket_id}")
+def delete_trinket(trinket_id: int, db: Session = Depends(get_db)):
+    return delete_object_from_db(db, Trinket, trinket_id)
