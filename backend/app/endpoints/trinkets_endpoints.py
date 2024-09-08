@@ -7,6 +7,7 @@ from app.operations.generics import (
     create_object_in_db,
     delete_object_from_db,
     get_objects_from_db,
+    get_single_object_from_db,
 )
 from app.schemas.item_schemas import TrinketSchema
 from fastapi import APIRouter, Depends
@@ -22,7 +23,7 @@ def get_trinket_all(skip: int = 0, limit: int = 100, db: Session = Depends(get_d
 
 @router.get("/trinket/{trinket_id}", response_model=TrinketSchema)
 def get_trinket(trinket_id: int, db: Session = Depends(get_db)):
-    return db.query(Trinket).filter(Trinket.id == trinket_id).one()
+    return get_single_object_from_db(db, Trinket, trinket_id)
 
 
 @router.post("/trinket/", response_model=TrinketSchema)

@@ -1,7 +1,7 @@
 from typing import List
 
 from app.models.item_models import Item
-from fastapi import Response, status
+from fastapi import HTTPException, Response, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -12,7 +12,10 @@ def get_objects_from_db(db: Session, model_class, skip: int, limit: int):
 
 
 def get_single_object_from_db(db: Session, model_class, id: int):
-    return db.query(model_class).filter(model_class.id == id).one()
+    db_object = db.query(model_class).filter(model_class.id == id).one_or_none()
+    if not db_object:
+        raise HTTPException(status_code=404, detail="Not found")
+    return db_object
 
 
 def create_object_in_db(db: Session, model_class, obj):
