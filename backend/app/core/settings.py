@@ -12,6 +12,11 @@ class Settings(BaseSettings):
     POSTGRES_DB: str
     POSTGRES_HOST: str
 
+    TEST_POSTGRES_USER: str
+    TEST_POSTGRES_PASSWORD: str
+    TEST_POSTGRES_DB: str
+    TEST_POSTGRES_HOST: str
+
     model_config = SettingsConfigDict(
         env_file=DOTENV_PATH,
         env_file_encoding="utf-8",
@@ -19,11 +24,11 @@ class Settings(BaseSettings):
 
     @property
     def postgres_url(self) -> str:
-        return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@db/{self.POSTGRES_DB}"
+        return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}/{self.POSTGRES_DB}"
 
     @property
     def postgres_test_url(self) -> str:
-        return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@db/{self.POSTGRES_DB}_test"
+        return f"postgresql://{self.TEST_POSTGRES_USER}:{self.TEST_POSTGRES_PASSWORD}@{self.TEST_POSTGRES_HOST}:5433/{self.TEST_POSTGRES_DB}"
 
 
 settings = Settings()

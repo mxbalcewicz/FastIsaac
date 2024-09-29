@@ -5,14 +5,18 @@ from app.endpoints.items_endpoints import router as items_router
 from app.endpoints.trinkets_endpoints import router as trinkets_router
 from fastapi import FastAPI
 
-app = FastAPI()
+
+def get_application() -> FastAPI:
+    application = FastAPI()
+    application.include_router(items_router)
+    application.include_router(trinkets_router)
+    application.include_router(item_pools_router)
+    return application
+
+
+app = get_application()
 
 Base.metadata.create_all(bind=engine)
-
-app.include_router(items_router)
-app.include_router(trinkets_router)
-app.include_router(item_pools_router)
-
 
 if __name__ == "__main__":
     uvicorn.run(app)
