@@ -1,8 +1,6 @@
-from sqlalchemy import Column, Integer, String, Table, ForeignKey
-from sqlalchemy.orm import relationship, declarative_base
-
-
-Base = declarative_base()
+from app.database import Base
+from sqlalchemy import Column, ForeignKey, Integer, String, Table
+from sqlalchemy.orm import relationship
 
 # Association tables for Many-to-Many relationships
 item_itempool_association = Table(

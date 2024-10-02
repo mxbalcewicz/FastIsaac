@@ -1,12 +1,8 @@
-# app/tests/conftest.py
-
 import pytest
 from app.core.settings import settings
-from app.database import get_db
+from app.database import Base, get_db
 from app.main import app
-from app.tests.utils.alembic_runner import run_migrations
 from fastapi.testclient import TestClient
-from pydantic import PostgresDsn
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -15,10 +11,15 @@ engine = create_engine(settings.postgres_test_url)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
+@pytest.fixture(scope="session", autouse=True)
+def setup_database():
+    Base.metadata.create_all(bind=engine)
+    yield
+    Base.metadata.drop_all(bind=engine)
+
+
 @pytest.fixture(scope="session")
 def session():
-    run_migrations("postgresql://testuser:testpassword@test_db:5433/testdb")
-
     db = TestingSessionLocal()
     try:
         yield db

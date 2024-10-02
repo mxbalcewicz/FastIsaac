@@ -28,7 +28,7 @@ class Settings(BaseSettings):
 
     @property
     def postgres_test_url(self) -> str:
-        return f"postgresql://{self.TEST_POSTGRES_USER}:{self.TEST_POSTGRES_PASSWORD}@{self.TEST_POSTGRES_HOST}:5433/{self.TEST_POSTGRES_DB}"
+        return f"postgresql://{self.TEST_POSTGRES_USER}:{self.TEST_POSTGRES_PASSWORD}@{self.TEST_POSTGRES_HOST}/{self.TEST_POSTGRES_DB}"
 
 
 settings = Settings()
