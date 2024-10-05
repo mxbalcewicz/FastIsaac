@@ -1,40 +1,32 @@
 import pytest
-from app.models.item_models import Item, ItemPool, Trinket
+from app.tests.factories.item_factories import (
+    ItemFactory,
+    ItemPoolFactory,
+    TrinketFactory,
+)
 from sqlalchemy.orm import Session
 
 
 @pytest.fixture
-def itempool_fixture(db_session: Session):
-    itempool = ItemPool(name="Test Pool")
-    db_session.add(itempool)
+def item_pool_fixtures(db_session: Session):
+    item_pools = [ItemPoolFactory() for _ in range(5)]
     db_session.commit()
-    db_session.refresh(itempool)
-    return itempool
+    return item_pools
 
 
 @pytest.fixture
-def item_fixture(db_session: Session, itempool_fixture: ItemPool):
-    item = Item(
-        name="Test Item",
-        description="A test item description",
-        quote="This is a test quote",
-        quality=1,
-        item_pools=[itempool_fixture],  # Associate the item with an item pool
-    )
-    db_session.add(item)
+def item_fixtures(db_session: Session, item_pool_fixtures):
+    items = []
+    for _ in range(20):
+        item_pool = item_pool_fixtures[_ % len(item_pool_fixtures)]
+        item = ItemFactory(item_pools=[item_pool])
+        items.append(item)
     db_session.commit()
-    db_session.refresh(item)
-    return item
+    return items
 
 
 @pytest.fixture
-def trinket_fixture(db_session: Session):
-    trinket = Trinket(
-        name="Test Trinket",
-        description="A test trinket description",
-        quote="This is a trinket quote",
-    )
-    db_session.add(trinket)
+def trinket_fixtures(db_session: Session):
+    trinkets = [TrinketFactory() for _ in range(20)]
     db_session.commit()
-    db_session.refresh(trinket)
-    return trinket
+    return trinkets
