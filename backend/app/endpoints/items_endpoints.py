@@ -8,7 +8,7 @@ from app.operations.generics import (
     delete_object_from_db,
 )
 from app.operations.item_operations import get_item_from_db, get_items_from_db
-from app.schemas.item_schemas import ItemBase, ItemSchema
+from app.schemas.item_schemas import ItemBase, ItemCreate, ItemSchema
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
@@ -25,14 +25,14 @@ def get_item(item_id: int, db: Session = Depends(get_db)):
     return get_item_from_db(db, item_id)
 
 
-@router.post("/item/", response_model=ItemBase)
-def create_item(item: ItemBase, db: Session = Depends(get_db)):
-    return create_object_in_db(db=db, item=item)
+@router.post("/item/", response_model=ItemSchema)
+def create_item(item: ItemCreate, db: Session = Depends(get_db)):
+    return create_object_in_db(db=db, model_class=Item, obj=item)
 
 
-@router.post("/item/multiple/", response_model=List[ItemBase])
-def create_item_multiple(items: List[ItemBase], db: Session = Depends(get_db)):
-    return create_multiple_objects_in_db(db, items, Item)
+@router.post("/item/multiple/", response_model=List[ItemSchema])
+def create_item_multiple(items: List[ItemCreate], db: Session = Depends(get_db)):
+    return create_multiple_objects_in_db(db, obj_list=items, model_class=Item)
 
 
 @router.delete("/item/{trinket_id}")

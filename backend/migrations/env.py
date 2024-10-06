@@ -3,6 +3,9 @@ from logging.config import fileConfig
 from alembic import context
 from app.core.settings import settings
 from app.database import Base
+
+# Model imports required by alembic.
+from app.models.item_models import Item, ItemPool, Trinket
 from sqlalchemy import engine_from_config, pool
 
 # this is the Alembic Config object, which provides

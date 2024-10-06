@@ -10,7 +10,7 @@ from app.operations.generics import (
     get_single_object_from_db,
 )
 from app.routers.isaac_routers import isaac_router as router
-from app.schemas.item_schemas import ItemPoolBase, ItemPoolSchema
+from app.schemas.item_schemas import ItemPoolCreate, ItemPoolSchema
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
@@ -27,14 +27,14 @@ def get_item_pool(item_pool_id: int, db: Session = Depends(get_db)):
     return get_single_object_from_db(db, ItemPool, item_pool_id)
 
 
-@router.post("/item_pool/", response_model=ItemPoolBase)
-def create_item_pool(item_pool: ItemPoolBase, db: Session = Depends(get_db)):
+@router.post("/item_pool/", response_model=ItemPoolSchema)
+def create_item_pool(item_pool: ItemPoolCreate, db: Session = Depends(get_db)):
     return create_object_in_db(db, ItemPool, item_pool)
 
 
-@router.post("/item_pool/multiple/", response_model=List[ItemPoolBase])
+@router.post("/item_pool/multiple/", response_model=List[ItemPoolSchema])
 def create_item_pool_multiple(
-    item_pools: List[ItemPoolBase], db: Session = Depends(get_db)
+    item_pools: List[ItemPoolCreate], db: Session = Depends(get_db)
 ):
     return create_multiple_objects_in_db(db, item_pools, ItemPool)
 

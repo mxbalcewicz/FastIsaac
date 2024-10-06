@@ -26,6 +26,7 @@ class Item(Base):
     __tablename__ = "items"
 
     id = Column(Integer, primary_key=True, index=True)
+    wiki_id = Column(String, nullable=False)
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
     quote = Column(String, nullable=False)
@@ -40,6 +41,7 @@ class Trinket(Base):
     __tablename__ = "trinkets"
 
     id = Column(Integer, primary_key=True, index=True)
+    wiki_id = Column(String, nullable=False)
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
     quote = Column(String, nullable=False)

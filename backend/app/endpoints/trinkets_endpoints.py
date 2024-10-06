@@ -9,7 +9,7 @@ from app.operations.generics import (
     get_objects_from_db,
     get_single_object_from_db,
 )
-from app.schemas.item_schemas import TrinketSchema
+from app.schemas.item_schemas import TrinketCreate, TrinketSchema
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
@@ -27,13 +27,13 @@ def get_trinket(trinket_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/trinket/", response_model=TrinketSchema)
-def create_trinket(trinket: TrinketSchema, db: Session = Depends(get_db)):
+def create_trinket(trinket: TrinketCreate, db: Session = Depends(get_db)):
     return create_object_in_db(db, Trinket, trinket)
 
 
 @router.post("/trinket/multiple/", response_model=List[TrinketSchema])
 def create_trinket_multiple(
-    trinkets: List[TrinketSchema], db: Session = Depends(get_db)
+    trinkets: List[TrinketCreate], db: Session = Depends(get_db)
 ):
     return create_multiple_objects_in_db(db, trinkets, Trinket)
 

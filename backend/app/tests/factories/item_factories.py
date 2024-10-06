@@ -7,6 +7,7 @@ class ItemFactory(factory.alchemy.SQLAlchemyModelFactory):
         model = Item
         sqlalchemy_session_persistence = "commit"
 
+    wiki_id = factory.Faker("word")
     name = factory.Faker("word")
     description = factory.Faker("sentence")
     quote = factory.Faker("sentence")
@@ -26,6 +27,7 @@ class TrinketFactory(factory.alchemy.SQLAlchemyModelFactory):
         model = Trinket
         sqlalchemy_session_persistence = "commit"
 
+    wiki_id = factory.Faker("word")
     name = factory.Faker("word")
     description = factory.Faker("sentence")
     quote = factory.Faker("sentence")
