@@ -38,6 +38,6 @@ def create_trinket_multiple(
     return create_multiple_objects_in_db(db, trinkets, Trinket)
 
 
-@router.delete("/trinket/delete/{trinket_id}")
+@router.delete("/trinket/{trinket_id}")
 def delete_trinket(trinket_id: int, db: Session = Depends(get_db)):
     return delete_object_from_db(db, Trinket, trinket_id)

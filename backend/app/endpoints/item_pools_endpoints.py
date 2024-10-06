@@ -39,6 +39,6 @@ def create_item_pool_multiple(
     return create_multiple_objects_in_db(db, item_pools, ItemPool)
 
 
-@router.delete("/item_pool/delete/{item_pool_id}")
+@router.delete("/item_pool/{item_pool_id}")
 def delete_item_pool(item_pool_id: int, db: Session = Depends(get_db)):
     return delete_object_from_db(db, ItemPool, item_pool_id)

@@ -16,7 +16,5 @@ def get_application() -> FastAPI:
 
 app = get_application()
 
-Base.metadata.create_all(bind=engine)
-
 if __name__ == "__main__":
     uvicorn.run(app)

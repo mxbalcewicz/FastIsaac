@@ -35,6 +35,6 @@ def create_item_multiple(items: List[ItemBase], db: Session = Depends(get_db)):
     return create_multiple_objects_in_db(db, items, Item)
 
 
-@router.delete("/item/delete/{trinket_id}")
+@router.delete("/item/{trinket_id}")
 def delete_item(trinket_id: int, db: Session = Depends(get_db)):
     return delete_object_from_db(db, Item, trinket_id)
