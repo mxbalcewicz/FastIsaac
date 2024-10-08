@@ -1,7 +1,6 @@
 from typing import List
 
-from app.models.item_models import Item
-from fastapi import HTTPException, Response, status
+from fastapi import HTTPException, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from sqlalchemy.orm import Session

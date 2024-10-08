@@ -2,7 +2,6 @@ from app.database import Base
 from sqlalchemy import Column, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import relationship
 
-# Association tables for Many-to-Many relationships
 item_itempool_association = Table(
     "item_itempool",
     Base.metadata,

@@ -9,11 +9,10 @@ from app.operations.generics import (
     get_objects_from_db,
     get_single_object_from_db,
 )
+from app.routers.isaac_routers import isaac_router as router
 from app.schemas.item_schemas import TrinketCreate, TrinketSchema
-from fastapi import APIRouter, Depends
+from fastapi import Depends
 from sqlalchemy.orm import Session
-
-router = APIRouter()
 
 
 @router.get("/trinket/", response_model=List[TrinketSchema])

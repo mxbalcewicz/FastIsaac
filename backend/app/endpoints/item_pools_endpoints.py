@@ -11,10 +11,8 @@ from app.operations.generics import (
 )
 from app.routers.isaac_routers import isaac_router as router
 from app.schemas.item_schemas import ItemPoolCreate, ItemPoolSchema
-from fastapi import APIRouter, Depends
+from fastapi import Depends
 from sqlalchemy.orm import Session
-
-router = APIRouter()
 
 
 @router.get("/item_pool/", response_model=List[ItemPoolSchema])

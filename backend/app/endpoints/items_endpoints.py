@@ -8,11 +8,10 @@ from app.operations.generics import (
     delete_object_from_db,
 )
 from app.operations.item_operations import get_item_from_db, get_items_from_db
-from app.schemas.item_schemas import ItemBase, ItemCreate, ItemSchema
-from fastapi import APIRouter, Depends
+from app.routers.isaac_routers import isaac_router as router
+from app.schemas.item_schemas import ItemCreate, ItemSchema
+from fastapi import Depends
 from sqlalchemy.orm import Session
-
-router = APIRouter()
 
 
 @router.get("/item/", response_model=List[ItemSchema])
