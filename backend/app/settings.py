@@ -1,9 +1,4 @@
-from pathlib import Path
-
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
-DOTENV_PATH = BASE_DIR / ".env"
 
 
 class Settings(BaseSettings):
@@ -23,7 +18,7 @@ class Settings(BaseSettings):
     REFRESH_EXPIRE_TIME: int = 86400  # 1 day
 
     model_config = SettingsConfigDict(
-        env_file=DOTENV_PATH,
+        env_file=".env",
         env_file_encoding="utf-8",
     )
 

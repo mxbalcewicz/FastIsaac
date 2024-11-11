@@ -1,5 +1,8 @@
+from app.auth.auth_bearer import AuthHandler, JWTBearer
+from app.database import get_db
 from app.models.user_models import User
 from app.schemas.user_schemas import UserRegisterSchema
+from fastapi import Depends, HTTPException
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
@@ -24,3 +27,14 @@ def create_user(db: Session, user: UserRegisterSchema):
     db.refresh(new_user)
 
     return new_user
+
+
+def get_current_user(token: str = Depends(JWTBearer()), db: Session = Depends(get_db)):
+    payload = AuthHandler.decode_token(token)
+    if not payload:
+        raise HTTPException(status_code=403, detail="Invalid or expired token.")
+    user = db.query(User).filter(User.email == payload["user_id"]).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found.")
+
+    return user

@@ -1,15 +1,12 @@
 import pytest
-from app.core.settings import settings
 from app.database import Base, get_db
 from app.main import app
-from app.tests.factories.item_factories import (
-    ItemFactory,
-    ItemPoolFactory,
-    TrinketFactory,
-)
+from app.settings import settings
+from app.tests.factories.item_factories import (ItemFactory, ItemPoolFactory,
+                                                TrinketFactory)
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.orm import sessionmaker
 
 engine = create_engine(settings.postgres_test_url)
 

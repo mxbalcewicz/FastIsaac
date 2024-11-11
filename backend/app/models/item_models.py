@@ -9,6 +9,13 @@ item_itempool_association = Table(
     Column("itempool_id", Integer, ForeignKey("itempools.id"), primary_key=True),
 )
 
+user_favorite_item_association = Table(
+    "user_favorite_items",
+    Base.metadata,
+    Column("user_id", Integer, ForeignKey("users.id"), primary_key=True),
+    Column("item_id", Integer, ForeignKey("items.id"), primary_key=True),
+)
+
 
 class ItemPool(Base):
     __tablename__ = "itempools"
@@ -33,6 +40,11 @@ class Item(Base):
 
     item_pools = relationship(
         "ItemPool", secondary=item_itempool_association, back_populates="items"
+    )
+    favorited_by = relationship(
+        "User",
+        secondary=user_favorite_item_association,
+        back_populates="favorite_items",
     )
 
 

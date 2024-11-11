@@ -1,10 +1,11 @@
+from app.auth.auth_bearer import JWTBearer
 from app.auth.auth_handler import AuthHandler
 from app.database import get_db
 from app.models.user_models import User
 from app.operations.user_operations import create_user, get_user_by_email
 from app.schemas.user_schemas import UserLoginSchema, UserRegisterSchema
 from fastapi import APIRouter, Depends, HTTPException
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from fastapi.security import HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 
 router = APIRouter()
@@ -38,6 +39,6 @@ def login(user: UserLoginSchema, db: Session = Depends(get_db)):
 
 
 @router.post("/refresh-token")
-def refresh_token(credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer())):
+def refresh_token(credentials: HTTPAuthorizationCredentials = Depends(JWTBearer())):
     refresh_token = credentials.credentials
     return AuthHandler.refresh_token(refresh_token)
