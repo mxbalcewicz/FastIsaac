@@ -17,6 +17,11 @@ class Settings(BaseSettings):
     TEST_POSTGRES_DB: str
     TEST_POSTGRES_HOST: str
 
+    JWT_SECRET: str
+    JWT_ALGORITHM: str = "HS256"
+    ACCESS_EXPIRE_TIME: int = 1200  # 20 minutes
+    REFRESH_EXPIRE_TIME: int = 86400  # 1 day
+
     model_config = SettingsConfigDict(
         env_file=DOTENV_PATH,
         env_file_encoding="utf-8",
@@ -24,11 +29,17 @@ class Settings(BaseSettings):
 
     @property
     def postgres_url(self) -> str:
-        return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}/{self.POSTGRES_DB}"
+        return (
+            f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@"
+            f"{self.POSTGRES_HOST}/{self.POSTGRES_DB}"
+        )
 
     @property
     def postgres_test_url(self) -> str:
-        return f"postgresql://{self.TEST_POSTGRES_USER}:{self.TEST_POSTGRES_PASSWORD}@{self.TEST_POSTGRES_HOST}/{self.TEST_POSTGRES_DB}"
+        return (
+            f"postgresql://{self.TEST_POSTGRES_USER}:{self.TEST_POSTGRES_PASSWORD}@"
+            f"{self.TEST_POSTGRES_HOST}/{self.TEST_POSTGRES_DB}"
+        )
 
 
 settings = Settings()
