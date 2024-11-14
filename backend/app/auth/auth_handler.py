@@ -4,10 +4,12 @@ from typing import Dict
 import jwt
 from fastapi import HTTPException
 
+from app.settings import settings
 
-class AuthHandler:  # TODO: Use .env
-    JWT_SECRET = "40-xfuqan5&82p@4g!x11976fyyr-m1+*d+cg0kp8--ycypm!k"
-    JWT_ALGORITHM = "HS256"
+
+class AuthHandler:
+    JWT_SECRET = settings.JWT_SECRET
+    JWT_ALGORITHM = settings.JWT_ALGORITHM
     ACCESS_EXPIRE_TIME = 1200  # 20 mins
     REFRESH_EXPIRE_TIME = 86400  # 1 day
 
@@ -21,9 +23,7 @@ class AuthHandler:  # TODO: Use .env
     @staticmethod
     def decode_token(token: str) -> dict:
         try:
-            decoded_token = jwt.decode(
-                token, AuthHandler.JWT_SECRET, algorithms=[AuthHandler.JWT_ALGORITHM]
-            )
+            decoded_token = jwt.decode(token, AuthHandler.JWT_SECRET, algorithms=[AuthHandler.JWT_ALGORITHM])
             return decoded_token if decoded_token["expires"] >= time.time() else None
         except jwt.DecodeError:
             return {}
@@ -38,12 +38,8 @@ class AuthHandler:  # TODO: Use .env
             "user_id": user_id,
             "expires": time.time() + AuthHandler.REFRESH_EXPIRE_TIME,
         }
-        access_token = jwt.encode(
-            access_payload, AuthHandler.JWT_SECRET, algorithm=AuthHandler.JWT_ALGORITHM
-        )
-        refresh_token = jwt.encode(
-            refresh_payload, AuthHandler.JWT_SECRET, algorithm=AuthHandler.JWT_ALGORITHM
-        )
+        access_token = jwt.encode(access_payload, AuthHandler.JWT_SECRET, algorithm=AuthHandler.JWT_ALGORITHM)
+        refresh_token = jwt.encode(refresh_payload, AuthHandler.JWT_SECRET, algorithm=AuthHandler.JWT_ALGORITHM)
 
         return AuthHandler.token_response(access_token, refresh_token)
 
@@ -51,9 +47,7 @@ class AuthHandler:  # TODO: Use .env
     def refresh_token(refresh_token: str) -> Dict[str, str]:
         decoded_refresh = AuthHandler.decode_token(refresh_token)
         if not decoded_refresh:
-            raise HTTPException(
-                status_code=403, detail="Invalid or expired refresh token."
-            )
+            raise HTTPException(status_code=403, detail="Invalid or expired refresh token.")
 
         user_id = decoded_refresh["user_id"]
         return AuthHandler.sign_token(user_id)

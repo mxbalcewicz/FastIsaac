@@ -1,27 +1,24 @@
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.security import HTTPAuthorizationCredentials
+from sqlalchemy.orm import Session
+
 from app.auth.auth_bearer import JWTBearer
 from app.auth.auth_handler import AuthHandler
 from app.database import get_db
 from app.models.user_models import User
 from app.operations.user_operations import create_user, get_user_by_email
 from app.schemas.user_schemas import UserLoginSchema, UserRegisterSchema
-from fastapi import APIRouter, Depends, HTTPException
-from fastapi.security import HTTPAuthorizationCredentials
-from sqlalchemy.orm import Session
 
 router = APIRouter()
 
 
 @router.post("/register")
 def register(user: UserRegisterSchema, db: Session = Depends(get_db)):
-    db_user = db.query(User).filter(User.email == user.email).first()
-    if db_user:
-        raise HTTPException(status_code=400, detail="Email is already registered")
+    user.validate_unique_email(db_session=db, email=user.email)
+    user.validate_unique_username(db_session=db, username=user.username)
 
-    if user.password != user.password_confirm:
-        raise HTTPException(status_code=400, detail="Passwords do not match")
-
-    user = create_user(db, user)
-    return AuthHandler.sign_token(user.email)
+    new_user: User = create_user(db, user)
+    return AuthHandler.sign_token(new_user.email)
 
 
 @router.post("/login")
