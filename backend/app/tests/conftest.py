@@ -13,20 +13,19 @@ from app.tests.factories.item_factories import (
 )
 from app.tests.factories.user_factories import UserFactory
 
-engine = create_engine(settings.postgres_test_url)
 
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-
-@pytest.fixture(scope="session", autouse=True)
-def setup_database():
+@pytest.fixture(scope="function")
+def engine():
+    engine = create_engine(settings.postgres_test_url)
     Base.metadata.create_all(bind=engine)
-    yield
+    yield engine
     Base.metadata.drop_all(bind=engine)
+    engine.dispose()
 
 
-@pytest.fixture(scope="session")
-def db_session():
+@pytest.fixture(scope="function")
+def db_session(engine):
+    TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     db = TestingSessionLocal()
     try:
         yield db
@@ -34,7 +33,7 @@ def db_session():
         db.close()
 
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def client(db_session):
     def override_get_db():
         try:

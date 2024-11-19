@@ -14,6 +14,7 @@ router = APIRouter()
 
 @router.post("/register")
 def register(user: UserRegisterSchema, db: Session = Depends(get_db)):
+    user.validate_passwords_match(password=user.password, password_confirm=user.password_confirm)
     user.validate_unique_email(db_session=db, email=user.email)
     user.validate_unique_username(db_session=db, username=user.username)
 

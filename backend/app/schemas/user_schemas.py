@@ -1,5 +1,5 @@
 from fastapi import HTTPException
-from pydantic import BaseModel, EmailStr, ValidationInfo, field_validator
+from pydantic import BaseModel, ConfigDict, EmailStr
 from sqlalchemy.orm import Session
 
 from app.models.user_models import User
@@ -11,14 +11,12 @@ class UserRegisterSchema(BaseModel):
     password: str
     password_confirm: str
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
-    @field_validator("password_confirm")
-    def passwords_match(cls, v: str, info: ValidationInfo) -> str:
-        if "password" in info.data and v != info.data["password"]:
-            raise ValueError("passwords do not match")
-        return v
+    @classmethod
+    def validate_passwords_match(cls, password, password_confirm):
+        if password != password_confirm:
+            raise HTTPException(status_code=400, detail="Passwords do not match")
 
     @classmethod
     def validate_unique_email(cls, db_session: Session, email: str):

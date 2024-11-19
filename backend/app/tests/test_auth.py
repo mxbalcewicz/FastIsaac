@@ -68,16 +68,14 @@ class TestAuth:
         assert response.json()["detail"] == "Email is already registered"
 
     def test_register__user_passwords_do_not_match(self, client, db_session):
+        email = "testemail@mail.com"
+        username = "testusername"
+        password = "testpass1234"
+
         response = client.post(
             self.Endpoints.register,
-            json={
-                "email": "testemail@mail.com",
-                "username": "testusername",
-                "password": "testpass1234",
-                "password_confirm": "nottestpass1234",
-            },
+            json={"email": email, "username": username, "password": password, "password_confirm": password + "123"},
         )
-
         assert response.status_code == 400
         assert response.json()["detail"] == "Passwords do not match"
 
@@ -98,8 +96,8 @@ class TestAuth:
         assert "refresh_token" in data
 
     def test_login_user_wrong_credentials(self, client, db_session):
-        email = "testmail@mail.com"
-        username = "test_user"
+        email = "testmail2@mail.com"
+        username = "test_user2"
         password = "test_password"
 
         # TODO: Correct test db sessions crosscontamination

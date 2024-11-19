@@ -45,23 +45,22 @@ class TestIsaacAPI:
         else:
             return 1
 
-    def test_item__get__list(self, client, db_session):
+    def test_item__get__list(self, client, db_session, item_fixtures):
         response = client.get(url=self.Endpoints.item)
         query = self._get_all_model_instances(db_session, Item)
 
         assert len(query) == len(response.json())
-        print(response.json())
         assert response.status_code == 200
         self._assert_object_response(query, response, self._assert_item_response)
 
-    def test_item__get__detail(self, client, db_session):
+    def test_item__get__detail(self, client, db_session, item_fixtures):
         item = db_session.query(Item).first()
         response = client.get(url=f"{self.Endpoints.item}/{item.id}")
 
         assert response.status_code == 200
         self._assert_item_response(item, response.json())
 
-    def test_item__delete(self, client, db_session):
+    def test_item__delete(self, client, db_session, item_fixtures):
         item = db_session.query(Item).first()
         response = client.delete(url=f"{self.Endpoints.item}/{item.id}")
         item_in_db = db_session.get(Item, item.id)
@@ -81,7 +80,7 @@ class TestIsaacAPI:
 
         assert response.status_code == 404
 
-    def test_trinket__get__list(self, client, db_session):
+    def test_trinket__get__list(self, client, db_session, item_fixtures):
         response: Response = client.get(url=self.Endpoints.trinket)
         query = self._get_all_model_instances(db_session, Trinket)
 
@@ -89,14 +88,14 @@ class TestIsaacAPI:
         assert response.status_code == 200
         self._assert_object_response(query, response, self._assert_trinket_response)
 
-    def test_trinket__get__detail(self, client, db_session):
+    def test_trinket__get__detail(self, client, db_session, trinket_fixtures):
         trinket = db_session.query(Trinket).first()
         response = client.get(url=f"{self.Endpoints.trinket}/{trinket.id}")
 
         assert response.status_code == 200
         self._assert_trinket_response(trinket, response.json())
 
-    def test_trinket__delete(self, client, db_session):
+    def test_trinket__delete(self, client, db_session, trinket_fixtures):
         trinket = db_session.query(Trinket).first()
         response = client.delete(url=f"{self.Endpoints.trinket}/{trinket.id}")
         trinket_in_db = db_session.get(Trinket, trinket.id)
@@ -114,7 +113,7 @@ class TestIsaacAPI:
         response = client.delete(url=f"{self.Endpoints.trinket}/{non_existing_id}")
         assert response.status_code == 404
 
-    def test_item_pool__get__list(self, client, db_session):
+    def test_item_pool__get__list(self, client, db_session, item_pool_fixtures):
         response = client.get(url=self.Endpoints.item_pool)
         query = self._get_all_model_instances(db_session, ItemPool)
 
@@ -122,14 +121,14 @@ class TestIsaacAPI:
         assert response.status_code == 200
         self._assert_object_response(query, response, self._assert_item_pool_response)
 
-    def test_item_pool__get__detail(self, client, db_session):
+    def test_item_pool__get__detail(self, client, db_session, item_pool_fixtures):
         item_pool = db_session.query(ItemPool).first()
         response = client.get(url=f"{self.Endpoints.item_pool}/{item_pool.id}")
-
+        print(response.json())
         assert response.status_code == 200
         self._assert_item_pool_response(item_pool, response.json())
 
-    def test_item_pool__delete(self, client, db_session):
+    def test_item_pool__delete(self, client, db_session, item_pool_fixtures):
         item_pool = db_session.query(ItemPool).first()
         response = client.delete(url=f"{self.Endpoints.item_pool}/{item_pool.id}")
         item_pool_in_db = db_session.get(ItemPool, item_pool.id)
@@ -137,7 +136,7 @@ class TestIsaacAPI:
         assert response.status_code == 200
         assert item_pool_in_db is None
 
-    def test_item_pool__get__detail__non_existing(self, client, db_session):
+    def test_item_pool__get__detail__non_existing(self, client, db_session, item_pool_fixtures):
         non_existing_id = self._get_non_existing_id(db_session, ItemPool)
         response = client.get(url=f"{self.Endpoints.item_pool}/{non_existing_id}")
 
