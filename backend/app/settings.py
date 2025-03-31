@@ -25,14 +25,14 @@ class Settings(BaseSettings):
     @property
     def postgres_url(self) -> str:
         return (
-            f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@"
+            f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@"
             f"{self.POSTGRES_HOST}/{self.POSTGRES_DB}"
         )
 
     @property
     def postgres_test_url(self) -> str:
         return (
-            f"postgresql://{self.TEST_POSTGRES_USER}:{self.TEST_POSTGRES_PASSWORD}@"
+            f"postgresql+asyncpg://{self.TEST_POSTGRES_USER}:{self.TEST_POSTGRES_PASSWORD}@"
             f"{self.TEST_POSTGRES_HOST}/{self.TEST_POSTGRES_DB}"
         )
 

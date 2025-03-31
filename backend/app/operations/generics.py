@@ -3,44 +3,41 @@ from typing import List
 from fastapi import HTTPException, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
-def get_objects_from_db(db: Session, model_class, skip: int, limit: int):
-    return db.query(model_class).offset(skip).limit(limit).all()
+async def get_objects_from_db(db: AsyncSession, model_class, skip: int, limit: int):
+    result = await db.execute(model_class.__table__.select().offset(skip).limit(limit))
+    return result.scalars().all()
 
 
-def get_single_object_from_db(db: Session, model_class, id: int):
-    db_object = db.query(model_class).filter(model_class.id == id).one_or_none()
+async def get_single_object_from_db(db: AsyncSession, model_class, id: int):
+    result = await db.execute(model_class.__table__.select().where(model_class.id == id))
+    db_object = result.scalar_one_or_none()
     if not db_object:
         raise HTTPException(status_code=404, detail="Not found")
     return db_object
 
 
-def create_object_in_db(db: Session, model_class, obj):
+async def create_object_in_db(db: AsyncSession, model_class, obj):
     db_obj = model_class(**obj.model_dump())
     db.add(db_obj)
-    db.commit()
-    db.refresh(db_obj)
+    await db.commit()
+    await db.refresh(db_obj)
     return db_obj
 
 
-def create_multiple_objects_in_db(
-    db: Session, objects_list: List[BaseModel], model_class
-):
-    db_objects = []
-    for obj in objects_list:
-        db_object = model_class(**obj.model_dump())
-        db_objects.append(db_object)
-    db.bulk_save_objects(db_objects)
-    db.commit()
+async def create_multiple_objects_in_db(db: AsyncSession, objects_list: List[BaseModel], model_class):
+    db_objects = [model_class(**obj.model_dump()) for obj in objects_list]
+    db.add_all(db_objects)
+    await db.commit()
     return db_objects
 
 
-def delete_object_from_db(db: Session, model_class, id: int):
-    db_obj = get_single_object_from_db(db, model_class, id)
-    db.delete(db_obj)
-    db.commit()
+async def delete_object_from_db(db: AsyncSession, model_class, id: int):
+    db_obj = await get_single_object_from_db(db, model_class, id)
+    await db.delete(db_obj)
+    await db.commit()
     return JSONResponse(
         status_code=status.HTTP_200_OK,
         content={"message": f"Object with id {id} deleted successfully"},
