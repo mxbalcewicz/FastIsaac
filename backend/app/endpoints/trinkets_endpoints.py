@@ -18,8 +18,8 @@ router = APIRouter()
 
 
 @router.get("/trinket/", response_model=List[TrinketSchema])
-async def get_trinket_all(skip: int = 0, limit: int = 100, db: AsyncSession = Depends(get_db)):
-    return await get_objects_from_db(db, Trinket, skip, limit)
+async def get_trinket_all(limit: int = 100, db: AsyncSession = Depends(get_db)):
+    return await get_objects_from_db(db, Trinket, limit)
 
 
 @router.get("/trinket/{trinket_id}", response_model=TrinketSchema)

@@ -4,15 +4,16 @@ from fastapi import HTTPException, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
 
 
-async def get_objects_from_db(db: AsyncSession, model_class, skip: int, limit: int):
-    result = await db.execute(model_class.__table__.select().offset(skip).limit(limit))
+async def get_objects_from_db(db: AsyncSession, model_class, limit: int):
+    result = await db.execute(select(model_class).limit(limit))
     return result.scalars().all()
 
 
 async def get_single_object_from_db(db: AsyncSession, model_class, id: int):
-    result = await db.execute(model_class.__table__.select().where(model_class.id == id))
+    result = await db.execute(select(model_class).where(model_class.id == id))
     db_object = result.scalar_one_or_none()
     if not db_object:
         raise HTTPException(status_code=404, detail="Not found")

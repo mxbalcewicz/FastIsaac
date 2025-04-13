@@ -18,8 +18,8 @@ router = APIRouter()
 
 
 @router.get("/item_pool/", response_model=List[ItemPoolSchema])
-async def get_item_pool_all(skip: int = 0, limit: int = 100, db: AsyncSession = Depends(get_db)):
-    return await get_objects_from_db(db, ItemPool, skip, limit)
+async def get_item_pool_all(limit: int = 100, db: AsyncSession = Depends(get_db)):
+    return await get_objects_from_db(db, ItemPool, limit)
 
 
 @router.get("/item_pool/{item_pool_id}", response_model=ItemPoolSchema)
